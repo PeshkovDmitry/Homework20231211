@@ -2,11 +2,11 @@ import socket
 import threading
 
 # Choosing Nickname
-nickname = input("Choose your nickname: ")
+nickname = input("Напишите ваше имя: ")
 
 # Connecting To Server
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(('192.168.0.108', 55555))
+client.connect(('127.0.0.1', 55555))
 
 # Listening to Server and Sending Nickname
 def receive():
@@ -14,21 +14,25 @@ def receive():
         try:
             # Receive Message From Server
             # If 'NICK' Send Nickname
-            message = client.recv(1024).decode('ascii')
+            message = client.recv(1024).decode('cp1251')
             if message == 'NICK':
-                client.send(nickname.encode('ascii'))
+                client.send(nickname.encode('cp1251'))
             else:
                 print(message)
         except:
             # Close Connection When Error
-            print("An error occured!")
+            print("Выход из чата...")
             client.close()
             break
 
 def write():
     while True:
-        message = '{}: {}'.format(nickname, input(''))
-        client.send(message.encode('ascii'))
+        text = input('')
+        if text == "exit": 
+            client.close()
+            exit()
+        message = '{}: {}'.format(nickname, text)
+        client.send(message.encode('cp1251'))
 
 # Starting Threads For Listening And Writing
 receive_thread = threading.Thread(target=receive)

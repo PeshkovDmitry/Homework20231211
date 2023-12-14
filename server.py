@@ -33,7 +33,7 @@ def handle(client):
             clients.remove(client)
             client.close()
             nickname = nicknames[index]
-            broadcast('{} left!'.format(nickname).encode('ascii'))
+            broadcast('{} left!'.format(nickname).encode('cp1251'))
             nicknames.remove(nickname)
             break
 
@@ -42,22 +42,22 @@ def receive():
     while True:
         # Accept Connection
         client, address = server.accept()
-        print("Connected with {}".format(str(address)))
+        print("Установлено соединение {}".format(str(address)))
 
         # Request And Store Nickname
-        client.send('NICK'.encode('ascii'))
-        nickname = client.recv(1024).decode('ascii')
+        client.send('NICK'.encode('cp1251'))
+        nickname = client.recv(1024).decode('cp1251')
         nicknames.append(nickname)
         clients.append(client)
 
         # Print And Broadcast Nickname
-        print("Nickname is {}".format(nickname))
-        broadcast("{} joined!".format(nickname).encode('ascii'))
-        client.send('Connected to server!'.encode('ascii'))
+        print("Ник {}".format(nickname))
+        broadcast("{} подключился в чат!".format(nickname).encode('cp1251'))
+        client.send('Соединение с сервером установлено!'.encode('cp1251'))
 
         # Start Handling Thread For Client
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
 
-print("Server if listening...")
+print("Ожидание соединений...")
 receive()
